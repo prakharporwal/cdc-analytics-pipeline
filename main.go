@@ -2,7 +2,7 @@ package main
 
 import (
 	"bfassignment/services"
-	"bfassignment/jobs"
+	// "bfassignment/jobs"
 	"fmt"
 )
 
@@ -16,10 +16,10 @@ func main() {
 	// fmt.Println(conn);
 	// fmt.Println(services.GetDBInstance());
 
-	// data :=  services.GetDataFromDisk()
-	// _ = services.GetDataFromDisk()
+	data :=  services.GetDataFromDisk()
+	_ = services.GetDataFromDisk()
 
-	// services.AddItemsinDDB(conn, tableName, data)
+	services.AddItemsinDDB(conn, tableName, data)
 
-	jobs.Read10000Items(conn,tableName)
+	// jobs.Read10000Items(conn,tableName)
 }

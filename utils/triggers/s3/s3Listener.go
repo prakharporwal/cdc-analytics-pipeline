@@ -5,8 +5,6 @@ import (
 	"context"
 	"time"
 
-	// "os"
-	// "encoding/json"
 	"fmt"
 	"log"
 
@@ -24,6 +22,8 @@ var bucketName string = "covidfiledumpbucket"
 var prefix string = "input"
 
 var MERGED_FOLDER_NAME string = "merged/"
+
+var MERGE_JSON_SEPARATOR string = ","
 
 var FILE_EXTENSION string = ".json"
 
@@ -63,7 +63,7 @@ func mergeFiles(connS3 *s3.S3, objectList *s3.ListObjectsOutput) string {
 		buf.ReadFrom(numBytes.Body)
 		myFileContentAsString := buf.String()
 
-		mergedJSONstring += myFileContentAsString
+		mergedJSONstring += myFileContentAsString + MERGE_JSON_SEPARATOR
 
 		// fmt.Println("Downloaded :", myFileContentAsString, "\n\n\n")
 
@@ -101,18 +101,16 @@ func LambdaHandler(ctx context.Context, event events.S3Event) {
 	connS3 := s3.New(sess)
 
 	for _, record := range event.Records {
-		
+
 		s3 := record.S3
 
 		objectKey := s3.Object.Key
 		bucketName := s3.Bucket.Name
 
 		fmt.Println("Object Added:", objectKey, " in ", bucketName)
-
 	}
 
 	objectList := getListOfFiles(connS3)
-
 	mergedJSONstring := mergeFiles(connS3, objectList)
 
 	uploadtoS3(sess, mergedJSONstring)

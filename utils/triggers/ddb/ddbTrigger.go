@@ -29,20 +29,22 @@ func LambdaHandler(ctx context.Context, event *events.DynamoDBEvent) (string, er
 		uploader := s3manager.NewUploader(sess)
 
 		if record.EventName == "INSERT" || record.EventName == "MODIFY" {
-			fmt.Println("EventName : ",record.EventName)
+			fmt.Println("EventName : ", record.EventName)
 			u := record.Change.NewImage
 
 			var item model.DataModel
 
 			item.UUID = u["uuid"].String()
+			item.Day = u["day"].String()
 			item.Month = u["month"].String()
 			item.Year = u["year"].String()
+			item.DateRep = u["dateRep"].String()
+
 			item.ContinentExp = u["continentExp"].String()
 			item.CountriesAndTerritories = u["countriesAndTerritories"].String()
-			item.CountryterritoryCode = u["countryTerritoryCode"].String()
+			item.CountryterritoryCode = u["countryterritoryCode"].String()
 			item.GeoId = u["geoId"].String()
 			item.CumulativeNumberFor14DaysofCOVID19CasesPer100000 = u["cumulative_number_for_14_days_of_COVID-19_cases_per_100000"].String()
-			item.DateRep = u["dateRep"].String()
 
 			item.Deaths, _ = strconv.Atoi(u["deaths"].Number())
 			item.Cases, _ = strconv.Atoi(u["cases"].Number())
@@ -51,8 +53,7 @@ func LambdaHandler(ctx context.Context, event *events.DynamoDBEvent) (string, er
 			uuid := item.UUID
 			dateRep := item.DateRep
 
-			fmt.Println("Item : ",item)
-
+			fmt.Println("Item : ", item)
 
 			jsonBod, err := json.Marshal(item)
 
