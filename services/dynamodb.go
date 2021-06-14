@@ -44,6 +44,9 @@ func GetDBInstance() *dynamodb.DynamoDB {
 
 func AddItemsinDDB(svc *dynamodb.DynamoDB,tableName string, data []model.DataModel) {
 
+	adding := true
+
+
 	for i,item := range data{
 		
 		if i==5{
@@ -69,8 +72,13 @@ func AddItemsinDDB(svc *dynamodb.DynamoDB,tableName string, data []model.DataMod
 			Item:      av,
 			TableName: aws.String(tableName),
 		}
-		_=inputItem
-		// _, err = svc.PutItem(inputItem)
+		// _=inputItem
+		if adding {
+			_, err = svc.PutItem(inputItem)
+			fmt.Println("Adding Items to table : " , tableName)
+		} else {
+			fmt.Println("Not adding Items to table : " , tableName)
+		}
 
 		if err != nil {
 			fmt.Println("Got error calling PutItem:")

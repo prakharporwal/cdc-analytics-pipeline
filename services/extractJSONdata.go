@@ -12,7 +12,7 @@ import (
 )
 
 func GetDataFromDisk() []model.DataModel {
-
+	
 	data, err := ioutil.ReadFile("./data/source.json")
 	if err != nil {
 		fmt.Print(err)
@@ -30,7 +30,7 @@ func GetDataFromDisk() []model.DataModel {
 }
 
 func convertJsonToModel(data []byte) ([]model.DataModel, error) {
-
+	fmt.Println("......converting JSON to DataModel......")
 	var result map[string][]interface{}
 
 	err := json.Unmarshal([]byte(data), &result)

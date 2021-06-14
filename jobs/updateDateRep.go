@@ -2,16 +2,17 @@ package jobs
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
 func Read10000Items(conn *dynamodb.DynamoDB, tableName string) {
 	fmt.Println("-----------sequentially reading from DDB table :"+tableName+ " -------")
-	Last
+
 	scanInputData := &dynamodb.ScanInput{
 		TableName: &tableName,
-		FilterExpression: ,
 	}
 
 	scanOutputData, err := conn.Scan(scanInputData)
@@ -35,9 +36,9 @@ func Read10000Items(conn *dynamodb.DynamoDB, tableName string) {
 	fmt.Println("-----------COMPLETED : reading from DDB table :"+tableName+ " -------")
 }
 
-func updateTableItem(conn *dynamodb.DynamoDB,tableName string,uuid string, oldDate string) error {
+func updateTableItem(conn *dynamodb.DynamoDB,tableName string,uuid string, oldDate string){
 	fmt.Println("----------updating Item-----------")
-	newRandomDate := generateNewDateRep(oldDate);
+	newRandomDate := generateNewDateRep();
 
 	input := &dynamodb.UpdateItemInput{
 		TableName: aws.String(tableName),
@@ -56,16 +57,32 @@ func updateTableItem(conn *dynamodb.DynamoDB,tableName string,uuid string, oldDa
 		UpdateExpression: aws.String("set dateRep = :newDateRep"),
 	}
 
+	// _ =input
 	_, err := conn.UpdateItem(input)
 
 	if err != nil {
 		fmt.Println("Error Updating Item In DDB:",err)
 	}
 
-	return err
 }
 
 
-func generateNewDateRep(oldDate string) string {
-	return "namaste"+oldDate;
-}
+func generateNewDateRep() string {
+		rand.Seed(time.Now().UTC().UnixNano())
+
+		min := time.Date(1970, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
+		max := time.Date(2070, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
+		delta := max - min
+
+		sec := rand.Int63n(delta) + min
+		randomDate := time.Unix(sec, 0)
+
+		randomDateString := randomDate.Format("02/01/2006")
+
+		// fmt.Println(randDate)
+		fmt.Println(randomDateString)
+
+		return randomDateString
+	}
+
+
