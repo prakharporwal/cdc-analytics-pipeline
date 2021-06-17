@@ -23,7 +23,7 @@ var prefix string = "input"
 
 var MERGED_FOLDER_NAME string = "merged/"
 
-var MERGE_JSON_SEPARATOR string = ","
+var MERGE_JSON_SEPARATOR string = "\n"
 
 var FILE_EXTENSION string = ".json"
 
